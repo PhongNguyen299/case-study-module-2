@@ -3,7 +3,7 @@ package Personnel;
 import java.util.Scanner;
 
 public class PersonnelMenu {
-    private static void showMenuPersonnel() {
+    public static void showMenuPersonnel() {
         System.out.println("*******************************************************");
         System.out.println("*                         MENU                        *");
         System.out.println("*   1. Add new personnel.                             *");

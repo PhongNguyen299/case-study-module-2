@@ -1,12 +1,8 @@
 package Project;
-
-import Department.Department;
-import Department.DepartmentManagement;
-import Personnel.Personnel;
-
+import static Department.DepartmentManagement.getDepartmentManagement;
+import static Department.DepartmentManagement.listDepartment;
 import java.util.*;
 
-import static Personnel.PersonnelManagement.listPersonnel;
 
 public final class ProjectManagement {
 
@@ -30,12 +26,7 @@ public final class ProjectManagement {
         return projectManagement;
     }
 
-    Scanner input = new Scanner(System.in);
-    public void addProject(){
-        System.out.println("Please Enter new project");
-        System.out.print("Enter id: ");
-        int id =  input.nextInt();
-        input.nextLine();
+    public int checkIdProject(int id){
         List arr = new ArrayList();
         for (Project project: listProject) {
             arr.add(project.getId());
@@ -51,26 +42,69 @@ public final class ProjectManagement {
                 input.nextLine();
             }
         }
+        return id;
+    }
+
+    Scanner input = new Scanner(System.in);
+    public void addProject(){
+        System.out.println("Please Enter new project");
+        System.out.print("Enter id: ");
+        int id =  input.nextInt();
+        input.nextLine();
+
+        checkIdProject(id);
         System.out.print("Enter name: ");
         String name = input.nextLine();
+
         System.out.print("Enter description: ");
         String description = input.nextLine();
+
         System.out.print("Enter startTime: ");
         String startTime = input.nextLine();
+
         System.out.println("You want to choose department responsible");
         System.out.println("Yes/No");
-        String answer = input.nextLine().toLowerCase();
+
+        String answer = input.nextLine().toLowerCase().trim();
         if (answer.equals("yes")){
-            DepartmentManagement.getDepartmentManagement().displayDepartment();
+            getDepartmentManagement().displayDepartment();
             System.out.print("Choose Department: ");
+
             int choice = input.nextInt();
             input.nextLine();
-            listProject.add(new Project(id,name,description,startTime,DepartmentManagement.getDepartmentManagement().listDepartment.get(choice)));
+
+            listProject.add(new Project(id,name,description,startTime,listDepartment.get(choice)));
         } else {
             listProject.add(new Project(id,name,description,startTime));
         }
     }
 
+    public void searchIdProject(){
+        System.out.println("Enter Project's ID you want to search:");
+        int idSearch = input.nextInt();
+        input.nextLine();
+        String textId = "";
+        for (Project element: listProject) {
+            if (element.getId() == idSearch) {
+                textId += element.getId() +" "+ element.getName() + " - Department responsible: "
+                        +element.getDepartmentResponsible() + " - Processing: " + element.getProcess();
+            }
+        }
+        System.out.println(textId);
+    }
+
+    public void searchNameProject(){
+        System.out.println("Enter Project's name you want to search:");
+        String nameSearch = input.nextLine();
+        String textName = "";
+        for (Project element: listProject) {
+            if (element.getName().equals(nameSearch)) {
+                textName += element.getId() +" "+ element.getName() + " - Department responsible: "
+                        +element.getDepartmentResponsible() + " - Processing: " + element.getProcess();
+            }
+        }
+        System.out.println(textName);
+    }
     public void search(){
         int choice = -1;
         while (choice !=0){
@@ -81,30 +115,9 @@ public final class ProjectManagement {
             choice = input.nextInt();
             input.nextLine();
             switch (choice){
-                case 1:
-                    System.out.println("Enter Project's ID you want to search:");
-                    int idSearch = input.nextInt();
-                    input.nextLine();
-                    String textId = "";
-                    for (Project element: listProject) {
-                        if (element.getId() == idSearch) {
-                            textId += element.getId() +" "+ element.getName() + " - Department responsible: "
-                                    +element.getDepartmentResponsible() + " - Processing: " + element.getProcess();
-                        }
-                    }
-                    System.out.println(textId);
+                case 1: searchIdProject();
                     break;
-                case 2:
-                    System.out.println("Enter Project's name you want to search:");
-                    String nameSearch = input.nextLine();
-                    String textName = "";
-                    for (Project element: listProject) {
-                        if (element.getName().equals(nameSearch)) {
-                            textName += element.getId() +" "+ element.getName() + " - Department responsible: "
-                                    +element.getDepartmentResponsible() + " - Processing: " + element.getProcess();
-                        }
-                    }
-                    System.out.println(textName);
+                case 2:searchNameProject();
                     break;
             }
         }
@@ -112,14 +125,19 @@ public final class ProjectManagement {
 
     public void displayProject(){
         for (Project element: listProject) {
-            System.out.println("ID:" + element.getId()+ " || Project: " + element.getName() +" || Description: "
-            + element.getDescription() +" || status: " + element.getProcess());
+            System.out.println("ID:" + element.getId()+ " || Project: " + element.getName() +
+                    " || Description: "
+                    + element.getDescription() +" || status: " + element.getProcess());
         }
+    }
+
+    public void fixProject(){
+
     }
 
     public void removeProject(){
         System.out.println("Choose project you want to remove: ");
-        for (Project element : ProjectManagement.getProjectManagement().listProject) {
+        for (Project element : listProject) {
             System.out.println(element.getId() +". "+ element.getName() + " Department " );
         }
         int index = input.nextInt()-1;
